@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from csv_storage import CSVStorage
 from shooting_record import ShootingRecord
 
 wikipedia_api_url = 'https://en.wikipedia.org/w/api.php'
@@ -8,7 +9,6 @@ wikipedia_page = 'List_of_mass_shootings_in_the_United_States_in_2022'
 def main():
     rawHTML = fetch_wikipedia_page()
     return get_list(rawHTML)
-
 
 def fetch_wikipedia_page():
     parameters = {
@@ -41,4 +41,5 @@ def get_list(html_input):
     return shooting_records
 
 if __name__ == '__main__':
-   main()
+   list = main()
+   CSVStorage.write_records_to_csv(list)
