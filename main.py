@@ -1,14 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
-import json
+from shooting_record import ShootingRecord
 
 wikipedia_api_url = 'https://en.wikipedia.org/w/api.php'
 wikipedia_page = 'List_of_mass_shootings_in_the_United_States_in_2022'
 
-
 def main():
     rawHTML = fetch_wikipedia_page()
-    return parse_html(rawHTML)
+    return get_list(rawHTML)
 
 
 def fetch_wikipedia_page():
@@ -28,10 +27,18 @@ def fetch_wikipedia_page():
 
     return response.json()['parse']['text']['*']
 
-def parse_html(html_input):
+def get_list(html_input):
     bs = BeautifulSoup(html_input, 'html.parser')
-    return bs
+    table = bs.select("table")[0]
 
+    rows = table.select("tr")[1:]
+    shooting_records = []
+
+    for row in rows:
+        current_record = ShootingRecord.from_html_table_row(row)
+        shooting_records.append(current_record)
+
+    return shooting_records
 
 if __name__ == '__main__':
-    print(fetch_wikipedia_page())
+   main()
