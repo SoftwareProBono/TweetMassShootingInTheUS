@@ -4,6 +4,8 @@ from csv_storage import CSVStorage
 from shooting_record import ShootingRecord
 from dotenv import load_dotenv
 
+from twitter import Twitter
+
 wikipedia_api_url = 'https://en.wikipedia.org/w/api.php'
 wikipedia_page = 'List_of_mass_shootings_in_the_United_States_in_2022'
 
@@ -48,6 +50,7 @@ def main():
     for single_record in new_records:
         new_end_state.append(single_record)
 
+    handle_changed_records(new_records)
     CSVStorage.write_records_to_csv(new_end_state)
 
 def fetch_wikipedia_page():
@@ -80,14 +83,28 @@ def get_list(html_input):
 
     return shooting_records
 
+def ordinal_suffix(number):
+    modulus = number % 10
+    if modulus == 1:
+        return 'st'
+    elif modulus == 2:
+        return 'nd'
+    elif modulus == 3:
+        return 'rd'
+    else:
+        return 'th'
+
+
 def handle_changed_records(records):
     for record in records:
         if record.tweet_id != None:
             #update tweet
             pass
         else:
-            #tweet
-            pass
+            #print(f'Another sad day in America. Mass Shooting in {record.city} in {record.state} on {record.date} 2022. {str(record.dead)} dead. {str(record.injured)} injured. This is the {str(record.occurrence) + ordinal_suffix(record.occurrence)} shooting this year in this city.')
+            client = Twitter()
+            client.refresh_tokens()
+            client.tweet(f'Another sad day in America. Mass Shooting in {record.city} in {record.state} on {record.date} 2022. {str(record.dead)} dead. {str(record.injured)} injured. This is the {str(record.occurrence) + ordinal_suffix(record.occurrence)} shooting this year in this city.')
 
     return records
 
