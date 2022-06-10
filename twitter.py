@@ -5,7 +5,7 @@ import json
 
 class Twitter:
 
-    token_file_path = './tokens.json'
+    token_file_path = os.getenv('TOKEN_FILE_PATH')
 
     def __init__(self):
         with open(self.token_file_path, "r") as f:
