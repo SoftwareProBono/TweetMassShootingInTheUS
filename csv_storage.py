@@ -3,16 +3,16 @@ from shooting_record import ShootingRecord
 
 class CSVStorage:
 
-    attributes = ['date', 'city', 'state', 'dead', 'injured', 'description']
-
     @staticmethod
     def get_saved_recods_from_csv():
         shooting_records = []
 
-        with open('data.csv', 'r') as file:
+        with open('data.csv', 'r', encoding='utf-8') as file:
             reader = csv.reader(file)
 
-            for row in reader[1:]:
+            for row in reader:
+                if row==ShootingRecord.attributes:
+                    continue
                 shooting_records.append(ShootingRecord(*row))
 
         return shooting_records
@@ -20,9 +20,9 @@ class CSVStorage:
     @staticmethod
     def write_records_to_csv(shooting_records):
 
-        with open('data.csv', 'w', newline='') as file:
+        with open('data.csv', 'w+', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
-            writer.writerow(CSVStorage.attributes)
+            writer.writerow(ShootingRecord.attributes)
 
             for record in shooting_records:
-                writer.writerow([record[attribute] for attribute in CSVStorage.attributes])
+                writer.writerow([record[attribute] for attribute in ShootingRecord.attributes])
