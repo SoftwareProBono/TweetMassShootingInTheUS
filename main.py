@@ -2,11 +2,13 @@ import requests
 from bs4 import BeautifulSoup
 from csv_storage import CSVStorage
 from shooting_record import ShootingRecord
+from dotenv import load_dotenv
 
 wikipedia_api_url = 'https://en.wikipedia.org/w/api.php'
 wikipedia_page = 'List_of_mass_shootings_in_the_United_States_in_2022'
 
 def main():
+    load_dotenv()
     updated_records = get_list(fetch_wikipedia_page())
     stored_records = CSVStorage.get_saved_recods_from_csv()
 
