@@ -83,15 +83,18 @@ def ordinal_suffix(number):
 
 
 def handle_changed_records(records):
+    if(len(records) == 0):
+        return records
+
+    client = Twitter()
+    client.refresh_tokens()
+
     for record in records:
         if record.tweet_id != None:
             #update tweet
             pass
         else:
-            print(f'Another sad day in America. Mass Shooting in {record.city} in {record.state} on {record.date} 2022. {str(record.dead)} dead. {str(record.injured)} injured. This is the {str(record.occurrence) + ordinal_suffix(record.occurrence)} shooting this year in this city.')
-            #client = Twitter()
-            #client.refresh_tokens()
-            #client.tweet(f'Another sad day in America. Mass Shooting in {record.city} in {record.state} on {record.date} 2022. {str(record.dead)} dead. {str(record.injured)} injured. This is the {str(record.occurrence) + ordinal_suffix(record.occurrence)} shooting this year in this city.')
+            client.tweet(f'Another sad day in America. Mass Shooting in {record.city} in {record.state} on {record.date} 2022. {str(record.dead)} dead. {str(record.injured)} injured. This is the {str(record.occurrence) + ordinal_suffix(record.occurrence)} shooting this year in this city.')
 
     return records
 

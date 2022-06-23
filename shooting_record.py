@@ -1,6 +1,4 @@
-from inspect import getargs
 import re
-from turtle import update
 
 def sanitize_html_text(input):
     return re.sub(f'\[.*?\]', '', input.replace(u'\xa0', ' ')).strip()
