@@ -1,3 +1,4 @@
+from shutil import unpack_archive
 import requests
 from bs4 import BeautifulSoup
 from csv_storage import CSVStorage
@@ -16,39 +17,25 @@ def main():
 
     old_new_pairing = []
     for single_stored in stored_records:
-        equal = False
         for single_updated in updated_records:
             if(single_stored.same_shooting(single_updated)):
                 old_new_pairing.append((single_stored, single_updated))
 
 
-    changed = []
+    paired_olds = [old for (old) in old_new_pairing]
 
-    for (old, new) in old_new_pairing:
-        if(not old.__eq__(new)):
-            changed.append((old, new))
-    
     # overwritten records in a list
     overwritten = [
         ShootingRecord(new.date, new.city, new.occurrence,  new.state, new.dead, new.injured, new.description, old.tweet_id)
         for (old, new) in old_new_pairing
     ]
-
     new_records = set(updated_records) - set(stored_records)
+    unchanged_records = (list(set(stored_records) & (set(paired_olds))))
 
     new_end_state = []
-    paired_olds = [old for (old) in old_new_pairing]
-
-    for single_record in stored_records:
-        if(single_record in paired_olds):
-            new_end_state.append(single_record)
-            continue
-    
-    for single_record in overwritten:
-        new_end_state.append(single_record)
-
-    for single_record in new_records:
-        new_end_state.append(single_record)
+    new_end_state.extend(unchanged_records)
+    new_end_state.extend(overwritten)
+    new_end_state.extend(new_records)
 
     handle_changed_records(new_records)
     CSVStorage.write_records_to_csv(new_end_state)
@@ -101,10 +88,10 @@ def handle_changed_records(records):
             #update tweet
             pass
         else:
-            #print(f'Another sad day in America. Mass Shooting in {record.city} in {record.state} on {record.date} 2022. {str(record.dead)} dead. {str(record.injured)} injured. This is the {str(record.occurrence) + ordinal_suffix(record.occurrence)} shooting this year in this city.')
-            client = Twitter()
-            client.refresh_tokens()
-            client.tweet(f'Another sad day in America. Mass Shooting in {record.city} in {record.state} on {record.date} 2022. {str(record.dead)} dead. {str(record.injured)} injured. This is the {str(record.occurrence) + ordinal_suffix(record.occurrence)} shooting this year in this city.')
+            print(f'Another sad day in America. Mass Shooting in {record.city} in {record.state} on {record.date} 2022. {str(record.dead)} dead. {str(record.injured)} injured. This is the {str(record.occurrence) + ordinal_suffix(record.occurrence)} shooting this year in this city.')
+            #client = Twitter()
+            #client.refresh_tokens()
+            #client.tweet(f'Another sad day in America. Mass Shooting in {record.city} in {record.state} on {record.date} 2022. {str(record.dead)} dead. {str(record.injured)} injured. This is the {str(record.occurrence) + ordinal_suffix(record.occurrence)} shooting this year in this city.')
 
     return records
 
