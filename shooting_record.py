@@ -10,6 +10,7 @@ class ShootingRecord:
     attributes = ['date', 'city', 'occurrence', 'state', 'dead', 'injured', 'description', 'tweet_id']
 
     def __init__(self, date, city, occurrence, state, dead, injured, description, tweet_id = None):
+        print(dead, type(dead))
         self.date = date
         self.city = city
         self.occurrence = int(occurrence)
@@ -22,15 +23,14 @@ class ShootingRecord:
     @staticmethod
     def from_html_table_row(html):
         arguments = []
-        arguments.append(sanitize_html_text((html.select('td:nth-child(1)')[0].get_text())))
-        [city_name, occurrence] = ShootingRecord.extract_data_from_city_entry(html.select('td:nth-child(2)')[0].get_text().replace(u'\xa0', ' ').strip())
-        arguments.append(city_name)
-        arguments.append(occurrence)
-        arguments.append(sanitize_html_text(html.select('td:nth-child(3)')[0].get_text()))
-        arguments.append(sanitize_html_text(html.select('td:nth-child(4)')[0].get_text()))
-        arguments.append(sanitize_html_text(html.select('td:nth-child(5)')[0].get_text()))
-        arguments.append(sanitize_html_text(html.select('td:nth-child(7)')[0].get_text()))
-        
+        for i in range(1, 8):
+            cell_text = sanitize_html_text(html.select(f'td:nth-child({i})')[0].get_text())
+            if i==2:
+                [city_name, occurrence] = ShootingRecord.extract_data_from_city_entry(cell_text.replace(u'\xa0', ' ').strip())
+                arguments.append(city_name)
+                arguments.append(occurrence)
+            else:
+                arguments.append(cell_text)
         return ShootingRecord(*arguments)
 
     @staticmethod
