@@ -8,7 +8,6 @@ class ShootingRecord:
     attributes = ['date', 'city', 'occurrence', 'state', 'dead', 'injured', 'description', 'tweet_id']
 
     def __init__(self, date, city, occurrence, state, dead, injured, description, tweet_id = None):
-        print(dead, type(dead))
         self.date = date
         self.city = city
         self.occurrence = int(occurrence)
